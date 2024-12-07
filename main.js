@@ -1,10 +1,12 @@
 const express =require("express");
 const {exec} = require("child_process");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const auto_deploy = express();
 
 auto_deploy.post("/git-push-post",(req,res)=>{
-    let shell_script_file = "./hello.sh";
+    let shell_script_file = process.env.SHELL_SCRIPT_FILE;
     let cmd = `bash ${shell_script_file}`;
     const result = exec(cmd,(err,stdout,stderr)=>{
         if(err){
@@ -20,6 +22,6 @@ auto_deploy.post("/git-push-post",(req,res)=>{
     });
 });
 
-auto_deploy.listen(2222,()=>{
-    console.log("auto server is running on port 2222...");
+auto_deploy.listen(process.env.PORT,process.env.HOST,()=>{
+    console.log(`auto server is running on http://${process.env.HOST}:${process.env.PORT}`);
 });
